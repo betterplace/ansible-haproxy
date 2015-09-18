@@ -1,0 +1,62 @@
+#---------------------------------------------------------------------
+# Created by Ansible - DO NOT MODIFY.
+#
+# This file is automatically assembled by ansible during the
+# provisioning.
+#
+# The template contains the basic settings only, all
+# backent- and frontend-specific settings are kept separately in
+# /etc/ansible/config.parts/
+#
+# config.parts are not used directly, but assembled by ansible
+# into a single haproxy.cfg
+#
+#---------------------------------------------------------------------
+
+#---------------------------------------------------------------------
+# Global settings
+#---------------------------------------------------------------------
+global
+    log         127.0.0.1       local0
+    log         127.0.0.1       local1 notice
+    chroot      /var/lib/haproxy
+    pidfile     /var/run/haproxy.pid
+    maxconn     10000
+    ulimit-n    65536
+    user        haproxy
+    group       haproxy
+    daemon
+    nbproc  1
+
+    # turn on stats unix socket
+    stats socket /var/lib/haproxy/stats
+
+#---------------------------------------------------------------------
+# common defaults that all the 'listen' and 'backend' sections will
+# use if not designated in their block
+#---------------------------------------------------------------------
+defaults
+    mode                    http
+    log                     global
+    option                  httplog
+    option                  dontlognull
+    option http-server-close
+    option forwardfor       except 127.0.0.0/8
+    option                  redispatch
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+    timeout http-keep-alive 10s
+    timeout check           10s
+    maxconn                 3000
+
+    {% if haproxy_stats.enabled -%}
+    stats enable
+    stats hide-version
+    stats uri /haproxy
+    stats realm Haproxy\ Statistics
+    stats auth {{haproxy_stats.user}}:{{haproxy_stats.password}}
+    {%- endif %}

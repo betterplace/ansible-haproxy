@@ -1,0 +1,31 @@
+---
+- name: Install haproxy
+  yum:
+    name=haproxy
+    state=installed
+  notify: restart haproxy
+
+- name: Create errorfiles directory
+  file:
+    path=/etc/haproxy/errorfiles
+    state=directory
+    owner=haproxy
+    group=haproxy
+    mode=0700
+
+- name: Create config directory
+  file:
+    path=/etc/haproxy/config.parts
+    state=directory
+    owner=haproxy
+    group=haproxy
+    mode=0700
+
+- name: Write base config
+  template:
+    src=haproxy.cfg.j2
+    dest=/etc/haproxy/config.parts/000_base.cfg
+    owner=haproxy
+    group=haproxy
+    mode=0600
+  notify: configure haproxy

@@ -1,0 +1,10 @@
+---
+- name: restart haproxy
+  service: name=haproxy state=restarted enabled=true
+
+- name: configure haproxy
+  assemble: src=/etc/haproxy/config.parts
+            dest=/etc/haproxy/haproxy.cfg
+            delimiter="# INCLUDED CONFIG FRAGMENT"
+            backup=yes
+  notify: restart haproxy
