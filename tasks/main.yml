@@ -29,3 +29,9 @@
     group=haproxy
     mode=0600
   notify: configure haproxy
+
+- name: Create runit run script
+  template:
+    src=haproxy-run.j2
+    dest=/etc/sv/haproxy/run
+    mode=0755
