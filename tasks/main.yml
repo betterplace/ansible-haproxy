@@ -1,4 +1,7 @@
 ---
+- name: Disable old SysV service
+  service: name=haproxy state=stopped enabled=no
+
 - name: Install haproxy
   yum:
     name=haproxy
@@ -35,6 +38,4 @@
     src=haproxy-run.j2
     dest=/etc/sv/haproxy/run
     mode=0755
-
-- name: Disable old SysV service
-  service: name=haproxy state=stopped enabled=no
+  notify: down-up haproxy
