@@ -1,6 +1,7 @@
 ---
 - name: Disable old SysV service
   service: name=haproxy state=stopped enabled=no
+  ignore_errors: true
 
 - name: Install haproxy
   yum:
