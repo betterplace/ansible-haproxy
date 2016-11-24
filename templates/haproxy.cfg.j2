@@ -58,8 +58,10 @@ defaults
 
     {% if haproxy_stats.enabled -%}
     stats enable
+    stats show-desc Haproxy on {{ansible_hostname}}
     stats hide-version
     stats uri /haproxy
     stats realm Haproxy\ Statistics
+    stats refresh 2s
     stats auth {{haproxy_stats.user}}:{{haproxy_stats.password}}
     {%- endif %}
